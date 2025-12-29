@@ -1,2 +1,2 @@
 # hw2
-Homework for Week 1
+Homework for Week 2
