@@ -1133,7 +1133,7 @@ theOnesOK(fragility23[,c(&#39;Country&#39;,&#39;S1: Demographic Pressures&#39;)]
 ## 179                    Norway                       1.4 Below/At Average</code></pre>
 <pre class="r"><code># define a function theOnesOK2 with the following parameters:
 #   DF: data frame
-#   DFvariable: column index of DF
+#   DFvariable: column index of DF (numeric)
 #   CountryColumn=&#39;Country&#39;: column of df to show; default is Country (optional)
 theOnesOK2 = function(DF, DFvariable, CountryColumn=&#39;Country&#39;) {
   # create a variable variable_values that stores the specified  column (by DFvariable) of the df
@@ -1150,7 +1150,7 @@ theOnesOK2 = function(DF, DFvariable, CountryColumn=&#39;Country&#39;) {
   # return the output with the new column and specified column CountryColumn to compare to
   return(DF[,c(CountryColumn, newname)])
 }</code></pre>
-<pre class="r"><code># run the theOnesOK2 function using fragility23 and its second column
+<pre class="r"><code># run the theOnesOK2 function using fragility23 and its second column 2 as the parameters
 theOnesOK2(fragility23, 2)</code></pre>
 <pre><code>##                       Country      Status_on 2
 ## 1                     Somalia Below/At Average

@@ -165,7 +165,7 @@ theOnesOK = function(DF_country_and_variable) {
 }
 ```
 
-```{r}
+```{r, eval=TRUE}
 # run the theOnesOK function using the Country and Demographic columns of fragility23
 theOnesOK(fragility23[,c('Country','S1: Demographic Pressures')])
 ```
@@ -173,7 +173,7 @@ theOnesOK(fragility23[,c('Country','S1: Demographic Pressures')])
 ```{r}
 # define a function theOnesOK2 with the following parameters:
 #   DF: data frame
-#   DFvariable: column index of DF
+#   DFvariable: column index of DF (numeric)
 #   CountryColumn='Country': column of df to show; default is Country (optional)
 theOnesOK2 = function(DF, DFvariable, CountryColumn='Country') {
   # create a variable variable_values that stores the specified  column (by DFvariable) of the df
@@ -191,8 +191,8 @@ theOnesOK2 = function(DF, DFvariable, CountryColumn='Country') {
   return(DF[,c(CountryColumn, newname)])
 }
 ```
-```{r}
-# run the theOnesOK2 function using fragility23 and its second column
+```{r, eval=TRUE}
+# run the theOnesOK2 function using fragility23 and its second column 2 as the parameters
 theOnesOK2(fragility23, 2)
 ```
 
@@ -214,7 +214,7 @@ mystery=function(DF,positionsToUse,CountryColumn='Country'){
 }
 ```
 
-```{r}
+```{r, eval=TRUE}
 # run the mystery function using fragility23 with columns 4-6 inclusive
 mystery(fragility23,4:6)
 ```
