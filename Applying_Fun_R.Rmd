@@ -1,0 +1,221 @@
+---
+title: An R Markdown document converted from "Applying_Fun_R.ipynb"
+output: html_document
+---
+
+# Applying functions in R
+
+Installing to read Excel files:
+
+```{r}
+# install the rio package if necessary
+# install.packages('rio')
+```
+
+# Reading data
+
+```{r}
+# open an Excel file from a GitHub URL
+linkGit="https://github.com/DACSS-601-Data-Science-Fundamentals/hw2/raw/refs/heads/main/FSI-2023-DOWNLOAD.xlsx"
+
+# load the rio package into session
+library(rio) # package needed
+
+# name the imported Excel file as fragility23
+fragility23=rio::import(file = linkGit) #object that will hold the result
+```
+
+```{r}
+# display the internal structure of fragility23
+str(fragility23)
+```
+
+## Apply square root function?
+
+```{r}
+# apply the square root function to df fragility23 but throws an error:
+#   non-numeric-alike variable(s) in data frame: Country, Rank
+# sqrt(fragility23)
+```
+
+```{r}
+# square root the numerical columns only
+# several columns (only numerical)
+sqrt(fragility23[,4:5])
+```
+
+```{r}
+# square root only the Total column of fragility23
+# one column
+sqrt(fragility23$Total)
+```
+
+```{r}
+# square root only one value from the Total column of fragility23
+# one value
+sqrt(fragility23$Total[1])
+```
+
+## Applying **sum()**:
+
+```{r}
+# sum all the numerical values of the selected columns
+# sum everything
+sum(fragility23[,4:5])
+```
+
+```{r}
+# find the sum of each of the selected columns
+# sum by column
+print(apply(fragility23[,4:5],2,sum))
+```
+
+```{r}
+# show the data type of the object
+# notice that double is shown, so it is a vector
+typeof(apply(fragility23[,4:5],2,sum))
+```
+
+If you do not see **list**, then it is a vector. ⏫
+
+```{r}
+# find the sum of each of the selected rows
+# sum by row
+print(apply(fragility23[,4:5],1,sum))
+```
+
+### Apply by iterating:
+
+```{r}
+# apply the sum function over the vector
+print(lapply(fragility23[,4:5],sum))
+```
+
+Notice output of **lapply**:
+
+```{r}
+# show the data type of the object
+# notice that list is shown
+typeof(lapply(fragility23[,4:5],sum))
+```
+
+```{r}
+# show the class of the object (can be used for an objected-oriented style of programming)
+# notice that list is shown
+class(lapply(fragility23[,4:5],sum))
+```
+
+Notice output of **sapply**:
+
+```{r}
+# apply the sum function over the vector using sapply this time
+# sapply is a wrapper of lapply that returns a vector by default
+print(sapply(fragility23[,4:5],sum))
+```
+
+```{r}
+# show the class of the object
+# notice that numeric is shown, so it is a vector
+class(sapply(fragility23[,4:5],sum))
+```
+
+Similarly:
+
+```{r}
+# apply the sqrt (square root) function over the vector
+print(lapply(fragility23[,4:5],sqrt))
+```
+
+```{r}
+# show the class of the object
+# notice that list is shown
+class(lapply(fragility23[,4:5],sqrt))
+```
+
+```{r}
+# apply the sqrt function over the vector using sapply this time
+print(sapply(fragility23[,4:5],sqrt))
+```
+
+```{r}
+# show the class of the object
+# notice that matrix and array are shown, so it is a vector
+class(sapply(fragility23[,4:5],sqrt))
+```
+
+Now our own function:
+
+```{r}
+# theOnesOK function creates a new column Status to the inputted df that shows "Above Average" if the value of the second column is greater than average and "Below/At Average" otherwise
+
+# define a function theOnesOK with a df (DF_country_and_variable) as the parameter
+theOnesOK = function(DF_country_and_variable) {
+  # create a variable variable_values that stores the second column of the df
+  variable_values <- DF_country_and_variable[,2]
+  # find the average value of the column
+  avg_value <- mean(variable_values, na.rm = TRUE)
+  # for each of the values in variable_values, 
+  #   if the value is greater than average, store "Above Average", else "Below/At Average in a variable is_above
+  is_above <- ifelse(variable_values > avg_value, "Above Average", "Below/At Average")
+  # store the is_above values in a new column Status
+  DF_country_and_variable$Status <- is_above
+  
+  # return the output with the updated column
+  return(DF_country_and_variable)
+}
+```
+
+```{r}
+# run the theOnesOK function using the Country and Demographic columns of fragility23
+theOnesOK(fragility23[,c('Country','S1: Demographic Pressures')])
+```
+
+```{r}
+# define a function theOnesOK2 with the following parameters:
+#   DF: data frame
+#   DFvariable: column index of DF
+#   CountryColumn='Country': column of df to show; default is Country (optional)
+theOnesOK2 = function(DF, DFvariable, CountryColumn='Country') {
+  # create a variable variable_values that stores the specified  column (by DFvariable) of the df
+  variable_values <- DF[,DFvariable]
+  # find the average value of the column
+  avg_value <- mean(variable_values, na.rm = TRUE)
+  # for each of the values in variable_values, 
+  #   if the value is greater than average, store "Above Average", else "Below/At Average in a variable is_above
+  is_above <- ifelse(variable_values > avg_value, "Above Average", "Below/At Average")
+  # create a variable newname to create a custom string "Status_on" with the specified DFvariable
+  newname = paste('Status_on', DFvariable)
+  # create a new column to the df with the new name and the values in is_above
+  DF[,newname] <- is_above 
+  # return the output with the new column and specified column CountryColumn to compare to
+  return(DF[,c(CountryColumn, newname)])
+}
+```
+```{r}
+# run the theOnesOK2 function using fragility23 and its second column
+theOnesOK2(fragility23, 2)
+```
+
+```{r}
+# define a function mystery with the following parameters:
+#   DF: data frame
+#   positionsToUse: vector of indices for columns of DF
+#   CountryColumn='Country': column of df to show; default is Country (optional)
+mystery=function(DF,positionsToUse,CountryColumn='Country'){
+  # create a variable newDF that contains a df with the column CountryColumn only
+  newDF=DF[,c(CountryColumn),drop = FALSE]
+  # create a variable average that contains the string "average"
+  average='average'
+  # create a new column average for newDF
+  # this new column will show the mean of specified columns by positionsToUse
+  newDF[,average]=apply(DF[,positionsToUse],1,mean,na.rm = TRUE)
+  # return the new df with the specified CountryColumn and the average
+  return(newDF[,c(CountryColumn,average)])
+}
+```
+
+```{r}
+# run the mystery function using fragility23 with columns 4-6 inclusive
+mystery(fragility23,4:6)
+```
+
